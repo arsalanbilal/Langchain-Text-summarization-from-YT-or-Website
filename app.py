@@ -51,4 +51,5 @@ if st.button("Summarize the content from YT or Website"):
 
         st.success(output_summary)
     except Exception as e:
-      st.exception(f"Exception:{e}")
+      st.exception(e)
+
