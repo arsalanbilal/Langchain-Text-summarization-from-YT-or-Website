@@ -18,7 +18,7 @@ URL = st.text_input("Paste a YouTube or Website URL below 👇")
 
 # LLM setup
 if groq_api_key:
-    llm = ChatGroq(model_name="llama-3.1-70b-versatile", api_key=groq_api_key)
+    llm = ChatGroq(model_name="llama-3.3-70b-versatile", api_key=groq_api_key)
 else:
     llm = None
 
@@ -56,6 +56,7 @@ if st.button("🚀 Summarize"):
         except Exception as e:
             st.error(f"❌ Error: {e}")
             st.info("If this is a YouTube link, make sure the video has subtitles enabled.")
+
 
 
 
