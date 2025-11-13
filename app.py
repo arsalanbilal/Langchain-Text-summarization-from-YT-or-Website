@@ -1,8 +1,8 @@
 import validators
 import streamlit as st
-from langchain.prompts import PromptTemplate
+from langchain_classic.prompts import PromptTemplate
 from langchain_groq import ChatGroq
-from langchain.chains.summarize import load_summarize_chain
+from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_community.document_loaders import YoutubeLoader, UnstructuredURLLoader
 
 # Streamlit page setup
@@ -51,11 +51,12 @@ if st.button("🚀 Summarize"):
                     st.error("Couldn't fetch content. Try another URL.")
                 else:
                     chain = load_summarize_chain(llm, chain_type="stuff", prompt=prompt)
-                    summary = chain.run(docs)
+                    summary = chain.invoke(docs)
                     st.success(summary)
         except Exception as e:
             st.error(f"❌ Error: {e}")
             st.info("If this is a YouTube link, make sure the video has subtitles enabled.")
+
 
 
 
