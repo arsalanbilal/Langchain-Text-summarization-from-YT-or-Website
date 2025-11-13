@@ -9,3 +9,4 @@ pytube
 streamlit
 openai
 tiktoken
+YoutubeLoader
