@@ -51,11 +51,12 @@ if st.button("🚀 Summarize"):
                     st.error("Couldn't fetch content. Try another URL.")
                 else:
                     chain = load_summarize_chain(llm, chain_type="stuff", prompt=prompt)
-                    summary = chain.invoke(docs)
+                    summary = chain.run(docs)
                     st.success(summary)
         except Exception as e:
             st.error(f"❌ Error: {e}")
             st.info("If this is a YouTube link, make sure the video has subtitles enabled.")
+
 
 
 
