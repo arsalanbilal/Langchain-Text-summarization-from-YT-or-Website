@@ -47,9 +47,10 @@ if st.button("Summarize the content from YT or Website"):
 
         #chain for summarization 
         chain = load_summarize_chain(llm, chain_type="stuff", prompt=prompt)
-        output_summary = chain.run(docs)
+        output_summary = chain.invoke(docs)
 
         st.success(output_summary)
     except Exception as e:
       st.exception(e)
+
 
