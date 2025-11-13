@@ -1,0 +1,8 @@
+langchain
+langchain-community
+langchain-groq
+langchain-classic
+validators==0.28.1
+youtube_transcript_api
+unstructured
+pytube
