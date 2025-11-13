@@ -7,3 +7,5 @@ youtube_transcript_api
 unstructured
 pytube
 streamlit
+openai
+tiktoken
