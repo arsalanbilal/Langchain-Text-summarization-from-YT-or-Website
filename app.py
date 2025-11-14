@@ -4,39 +4,68 @@ from langchain_classic.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_community.document_loaders import YoutubeLoader, UnstructuredURLLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# Streamlit page setup
-st.set_page_config(page_title="GenAI Summarizer", page_icon="📄")
-st.title("🎥 LangChain: Summarize YouTube or Website Content")
+# ----------------------------
+# Streamlit UI Configuration
+# ----------------------------
+st.set_page_config(page_title="GenAI Summarizer", page_icon="📄", layout="wide")
+st.title("🎥 GenAI Summarizer: YouTube & Website Content")
 
-# Sidebar for API key
 with st.sidebar:
-    groq_api_key = st.text_input("🔑 Enter your Groq API Key", type="password")
+    st.subheader("🔑 API Settings")
+    groq_api_key = st.text_input("Enter Groq API Key", type="password")
 
 # Input URL
 URL = st.text_input("Paste a YouTube or Website URL below 👇")
 
-# LLM setup
+# Summary options
+summary_style = st.radio(
+    "Choose summary style:",
+    ["Concise (150 words)", "Standard (300 words)", "Detailed (500 words)"]
+)
+
+word_limit = {
+    "Concise (150 words)": 150,
+    "Standard (300 words)": 300,
+    "Detailed (500 words)": 500,
+}[summary_style]
+
+# ----------------------------
+# LLM Setup
+# ----------------------------
 if groq_api_key:
     llm = ChatGroq(model_name="llama-3.3-70b-versatile", api_key=groq_api_key)
 else:
     llm = None
 
 prompt_template = """
-Summarize the following content in about 300 words, highlighting key insights and main points:
+Summarize the following content in about {word_limit} words.
+Highlight key insights, main ideas, and essential understanding:
+
 {text}
 """
-prompt = PromptTemplate(input_variables=["text"], template=prompt_template)
 
+prompt = PromptTemplate(
+    input_variables=["text", "word_limit"],
+    template=prompt_template
+)
+
+# ----------------------------
+# Main Summarization Logic
+# ----------------------------
 if st.button("🚀 Summarize"):
-    if not groq_api_key.strip() or not URL.strip():
-        st.error("Please enter both API key and URL.")
+    if not groq_api_key:
+        st.error("Please enter your Groq API Key.")
+    elif not URL:
+        st.error("Please enter a YouTube or Website URL.")
     elif not validators.url(URL):
         st.error("Invalid URL format.")
     else:
         try:
-            with st.spinner("Fetching and summarizing content..."):
-                # Handle both YouTube and website URLs
+            with st.spinner("⏳ Fetching content..."):
+
+                # Detect content type
                 if "youtube.com" in URL or "youtu.be" in URL:
                     loader = YoutubeLoader.from_youtube_url(URL, add_video_info=False)
                 else:
@@ -47,19 +76,34 @@ if st.button("🚀 Summarize"):
                     )
 
                 docs = loader.load()
+
                 if not docs:
                     st.error("Couldn't fetch content. Try another URL.")
-                else:
-                    chain = load_summarize_chain(llm, chain_type="stuff", prompt=prompt)
-                    summary = chain.run(docs)
-                    st.success(summary)
+                    st.stop()
+
+            with st.spinner("📘 Cleaning and preparing text..."):
+                # Split to avoid token overflow
+                splitter = RecursiveCharacterTextSplitter(
+                    chunk_size=3000,
+                    chunk_overlap=200
+                )
+                chunks = splitter.split_documents(docs)
+
+            with st.spinner("🤖 Generating summary..."):
+                chain = load_summarize_chain(
+                    llm,
+                    chain_type="map_reduce",
+                    prompt=prompt
+                )
+                
+                summary = chain.run({
+                    "input_documents": chunks,
+                    "word_limit": word_limit
+                })
+
+            st.success("✅ Summary Generated!")
+            st.write(summary)
+
         except Exception as e:
             st.error(f"❌ Error: {e}")
-            st.info("If this is a YouTube link, make sure the video has subtitles enabled.")
-
-
-
-
-
-
-
+            st.info("If this is a YouTube link, ensure subtitles are available.")
