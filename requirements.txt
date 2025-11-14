@@ -6,3 +6,4 @@ validators==0.28.1
 youtube-transcript-api
 pytube
 langchain-classic
+unstructured
