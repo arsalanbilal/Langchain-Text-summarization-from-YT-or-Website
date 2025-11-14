@@ -2,7 +2,7 @@ streamlit
 langchain
 langchain-groq
 langchain-community
-validators
+validators==0.28.1
 youtube-transcript-api
 pytube
 langchain-classic
