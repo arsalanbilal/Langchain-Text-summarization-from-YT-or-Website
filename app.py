@@ -35,7 +35,7 @@ word_limit = {
 # LLM Setup
 # ----------------------------
 if groq_api_key:
-    llm = ChatGroq(model_name="llama-3.3-70b-versatile", api_key=groq_api_key)
+    llm = ChatGroq(model_name="openai/gpt-oss-120b" ,api_key=groq_api_key)
 else:
     llm = None
 
@@ -96,4 +96,5 @@ if st.button("🚀 Summarize"):
         except Exception as e:
             st.error(f"❌ Error: {e}")
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
 
