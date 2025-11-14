@@ -39,17 +39,6 @@ if groq_api_key:
 else:
     llm = None
 
-prompt_template = """
-Summarize the following content in about {word_limit} words.
-Highlight key insights, main ideas, and essential understanding:
-
-{text}
-"""
-
-prompt = PromptTemplate(
-    input_variables=["text", "word_limit"],
-    template=prompt_template
-)
 
 # ----------------------------
 # Main Summarization Logic
@@ -92,8 +81,8 @@ if st.button("🚀 Summarize"):
             with st.spinner("🤖 Generating summary..."):
                 chain = load_summarize_chain(
                     llm,
-                    chain_type="map_reduce",
-                    prompt=prompt
+                    chain_type="map_reduce"
+                
                 )
                 
                 summary = chain.run({
@@ -107,3 +96,4 @@ if st.button("🚀 Summarize"):
         except Exception as e:
             st.error(f"❌ Error: {e}")
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
