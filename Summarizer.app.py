@@ -35,9 +35,12 @@ word_limit = {
 # ----------------------------
 # LLM Setup
 # ----------------------------
-repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+Repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 if Hf_api_key:
-    llm = HuggingFaceEndpoint(repo_id = repo_id,  temperature = 0.7, token =Hf_api_key)
+    llm = HuggingFaceEndpoint(repo_id = Repo_id,
+                          huggingface_hub_api_token = Hf_api_key,
+                          temperature = 0.7,
+                          max_length = 570)
 else:
     llm = None
 
@@ -99,3 +102,4 @@ if st.button("🚀 Summarize"):
             st.error(f"❌ Error: {e}")
 
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
