@@ -41,7 +41,7 @@ if Hf_api_key:
     llm = HuggingFaceHub(
         repo_id=Repo_id,
         huggingfacehub_api_token=Hf_api_key,
-        task="text-generation",
+        task="summarization",
         model_kwargs={
             "temperature": 0.7,
             "max_new_tokens": 600
@@ -105,6 +105,7 @@ if st.button("🚀 Summarize"):
         except Exception as e:
             st.error(f"❌ Error: {e}")
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
 
 
 
