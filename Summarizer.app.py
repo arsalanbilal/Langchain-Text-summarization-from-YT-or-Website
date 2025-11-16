@@ -5,7 +5,7 @@ from langchain_groq import ChatGroq
 from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_community.document_loaders import YoutubeLoader, UnstructuredURLLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceHub
+from langchain.llms import HuggingFaceHub
 
 # ----------------------------
 # Streamlit UI Configuration
@@ -103,6 +103,7 @@ if st.button("🚀 Summarize"):
             st.error(f"❌ Error: {e}")
 
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
 
 
 
