@@ -5,6 +5,7 @@ from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_community.document_loaders import YoutubeLoader, UnstructuredURLLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.llms import HuggingFaceHub
+from huggingface_hub import InferenceClient
 
 # ----------------------------
 # Streamlit UI Configuration
@@ -32,23 +33,26 @@ word_limit = {
 }[summary_style]
 
 # ----------------------------
-# LLM Setup (FIXED)
-# ----------------------------
-# Mixtral CANNOT run on HuggingFaceHub API → replaced with a working summarization model
-Repo_id = "facebook/bart-large-cnn"
+# LLM Setup 
+
+Repo_id = "facebook/bart-large-cnn"   # works with summarization
 
 if Hf_api_key:
-    llm = HuggingFaceHub(
-        repo_id=Repo_id,
-        huggingfacehub_api_token=Hf_api_key,
-        task="summarization",
-        model_kwargs={
-            "temperature": 0.7,
-            "max_new_tokens": 600
-        }
-    )
+    client = InferenceClient(Repo_id, token=Hf_api_key)
+
+    class HFClientWrapper:
+        def __init__(self, c):
+            self.c = c
+
+        def __call__(self, prompt):
+            result = self.c.text_generation(prompt, max_new_tokens=600)
+            return result
+
+    llm = HFClientWrapper(client)
+
 else:
     llm = None
+
 
 
 # ----------------------------
@@ -105,6 +109,7 @@ if st.button("🚀 Summarize"):
         except Exception as e:
             st.error(f"❌ Error: {e}")
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
 
 
 
