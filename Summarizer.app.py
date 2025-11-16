@@ -37,7 +37,7 @@ word_limit = {
 # ----------------------------
 repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 if Hf_api_key:
-    llm = HuggingFaceEndpoint(repo_id = repo_id, max_length = 150, temperature = 0.7, token =Hf_api_key)
+    llm = HuggingFaceEndpoint(repo_id = repo_id,  temperature = 0.7, token =Hf_api_key)
 else:
     llm = None
 
@@ -97,4 +97,5 @@ if st.button("🚀 Summarize"):
 
         except Exception as e:
             st.error(f"❌ Error: {e}")
+
             st.info("If this is a YouTube link, ensure subtitles are available.")
