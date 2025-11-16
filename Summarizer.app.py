@@ -5,7 +5,7 @@ from langchain_groq import ChatGroq
 from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_community.document_loaders import YoutubeLoader, UnstructuredURLLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEndpoint
+from langchain_huggingface import HuggingFaceHub
 
 # ----------------------------
 # Streamlit UI Configuration
@@ -37,10 +37,10 @@ word_limit = {
 # ----------------------------
 Repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 if Hf_api_key:
-    llm = HuggingFaceEndpoint(repo_id = Repo_id,
-                          token = Hf_api_key,
-                          temperature = 0.7,
-                          max_length = 570)
+    llm = HuggingFaceHub(repo_id = Repo_id,
+                          huggingfacehub_api_token = Hf_api_key,
+                          model_kwargs = {temperature = 0.7,
+                          max_new_tokens = 600})
 else:
     llm = None
 
@@ -102,5 +102,6 @@ if st.button("🚀 Summarize"):
             st.error(f"❌ Error: {e}")
 
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
 
 
