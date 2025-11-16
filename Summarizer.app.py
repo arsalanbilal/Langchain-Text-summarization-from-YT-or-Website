@@ -39,8 +39,9 @@ Repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 if Hf_api_key:
     llm = HuggingFaceHub(repo_id = Repo_id,
                           huggingfacehub_api_token = Hf_api_key,
-                          model_kwargs = {temperature = 0.7,
-                          max_new_tokens = 600})
+                          model_kwargs = {
+                              "temperature" = 0.7,
+                              "max_new_tokens" = 600})
 else:
     llm = None
 
@@ -102,6 +103,7 @@ if st.button("🚀 Summarize"):
             st.error(f"❌ Error: {e}")
 
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
 
 
 
