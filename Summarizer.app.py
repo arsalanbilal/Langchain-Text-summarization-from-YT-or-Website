@@ -1,7 +1,7 @@
 import validators
 import streamlit as st
-from langchain.prompts import PromptTemplate
-from langchain.chains.summarize import load_summarize_chain
+from langchain_classic.prompts import PromptTemplate
+from langchain_classic.chains.summarize import load_summarize_chain
 from langchain_community.document_loaders import YoutubeLoader, UnstructuredURLLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.llms import HuggingFaceHub
@@ -105,6 +105,7 @@ if st.button("🚀 Summarize"):
         except Exception as e:
             st.error(f"❌ Error: {e}")
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
 
 
 
