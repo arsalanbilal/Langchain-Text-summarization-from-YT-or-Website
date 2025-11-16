@@ -1,8 +1,7 @@
 import validators
 import streamlit as st
-from langchain_classic.prompts import PromptTemplate
-from langchain_groq import ChatGroq
-from langchain_classic.chains.summarize import load_summarize_chain
+from langchain.prompts import PromptTemplate
+from langchain.chains.summarize import load_summarize_chain
 from langchain_community.document_loaders import YoutubeLoader, UnstructuredURLLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.llms import HuggingFaceHub
@@ -33,16 +32,21 @@ word_limit = {
 }[summary_style]
 
 # ----------------------------
-# LLM Setup
+# LLM Setup (FIXED)
 # ----------------------------
-Repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+# Mixtral CANNOT run on HuggingFaceHub API → replaced with a working summarization model
+Repo_id = "facebook/bart-large-cnn"
+
 if Hf_api_key:
-    llm = HuggingFaceHub(repo_id = Repo_id,
-                          huggingfacehub_api_token = Hf_api_key,
-                         task = "text-generation",
-                          model_kwargs = {
-                              "temperature" : 0.7,
-                              "max_new_tokens" :  600})
+    llm = HuggingFaceHub(
+        repo_id=Repo_id,
+        huggingfacehub_api_token=Hf_api_key,
+        task="text-generation",
+        model_kwargs={
+            "temperature": 0.7,
+            "max_new_tokens": 600
+        }
+    )
 else:
     llm = None
 
@@ -86,24 +90,23 @@ if st.button("🚀 Summarize"):
                 chunks = splitter.split_documents(docs)
 
             with st.spinner("🤖 Generating summary..."):
+                
                 chain = load_summarize_chain(
                     llm,
                     chain_type="map_reduce"
-                
                 )
-                
-                summary = chain.run({
-                    "input_documents": chunks,
-                    "word_limit": word_limit
-                })
+
+                # FIX: map_reduce chain DOES NOT accept word_limit
+                summary = chain.run({"input_documents": chunks})
 
             st.success("✅ Summary Generated!")
             st.write(summary)
 
         except Exception as e:
             st.error(f"❌ Error: {e}")
-
             st.info("If this is a YouTube link, ensure subtitles are available.")
+
+
 
 
 
